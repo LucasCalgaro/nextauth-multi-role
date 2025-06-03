@@ -8,6 +8,7 @@ import {
   authRoutes,
   publicRoutes,
 } from "@/routes";
+import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
@@ -20,7 +21,7 @@ export default auth(async (req) => {
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if (isApiAuthRoute) {
-    return null;
+    return NextResponse.next();
   }
 
   const res = await fetch(`${nextUrl.origin}/api/users-count`);
@@ -34,7 +35,7 @@ export default auth(async (req) => {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
-    return null;
+    return NextResponse.next();
   }
 
   if (!isLoggedIn && !isPublicRoute) {
@@ -50,7 +51,7 @@ export default auth(async (req) => {
     );
   }
 
-  return null;
+  return NextResponse.next();
 });
 
 export const config = {
